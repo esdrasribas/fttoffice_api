@@ -5,7 +5,7 @@ from fttoffice.libs.exceptError import V4ObjectNotFoundError
 class DeleteIPv4Addr:
     def delete_IPv4(self, ipv4):
         try:
-            url = "http://10.61.184.101:8080/ws/services/VQIPWebService/"
+            url = "URL"
             headers = {
                 'Content-Type': 'text/xml; charset=utf-8'
             }
@@ -36,8 +36,8 @@ class DeleteIPv4Addr:
             
 
     def xml_VQIP_DeleteIPv4Addr(self, ipv4):
-        user = "vt38823"
-        senha = "abcd12345"
+        user = "XXXXX"
+        senha = "XXXX"
         return f"""<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
         <soapenv:Header xmlns:wsa="http://www.w3.org/2005/08/addressing">
             <wsse:Security soapenv:mustUnderstand="1" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
@@ -46,7 +46,7 @@ class DeleteIPv4Addr:
                     <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">{senha}</wsse:Password>
                 </wsse:UsernameToken>
             </wsse:Security>
-            <wsa:To>http://10.61.184.101:8080/ws/services/VQIPWebService</wsa:To>
+            <wsa:To>URL</wsa:To>
             <wsa:MessageID>urn:uuid:284e2892-9d3a-4d5b-ae4f-26c74e53c82a</wsa:MessageID>
             <wsa:Action>VQIPManager_DeleteRequest</wsa:Action>
         </soapenv:Header>
@@ -64,4 +64,4 @@ class DeleteIPv4Addr:
         </soapenv:Envelope>"""
     
 # vqip_instance = delete_IPv4()
-# ipv4Dell = vqip_instance.deleteIPv4('189.49.208.3')
+# ipv4Dell = vqip_instance.deleteIPv4('IP')
