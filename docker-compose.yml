@@ -3,24 +3,53 @@ services:
   web:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
+    restart: always
     volumes:
-      - D:/Projetos/FTTOFFICE_API/api:/app  # Caminho absoluto para o diretório do projeto
+      - /fttoffice-api/FTTOFFICE_API/api_fttoffice:/app
+      - /fttoffice-api/logs:/fttoffice-api/logs
     ports:
       - "8001:8000"
-    depends_on:
-      - db
-  db:
-    image: postgres:13
+    env_file:
+      - ./api_fttoffice/.env
     environment:
-      POSTGRES_DB: mydb
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
+      - TZ=America/Sao_Paulo
+    depends_on:
+      - fttoffice_db
+    logging:
+      driver: "json-file"  # Define o driver de log para json-file
+      options:
+        max-size: "999m"  # Define o tamanho máximo do arquivo de log (exemplo: 10 MB)
+        max-file: "1"    # Define o número máximo de arquivos de log a serem mantidos
 
-  # rabbitmq:
-  #   image: rabbitmq:3-management
-  #   ports:
-  #     - "5672:5672"
-  #     - "15672:15672"
-  #   environment:
-  #     RABBITMQ_DEFAULT_USER: user
-  #     RABBITMQ_DEFAULT_PASS: password
+
+  fttoffice_db:
+    image: postgres:13
+    restart: always
+    volumes:
+      - ./.datastorage:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  celery:
+    restart: always
+    build: .
+    command: celery -A api.celery worker -l info
+    volumes:
+      - /fttoffice-api/FTTOFFICE_API/api_fttoffice:/app
+    depends_on:
+      - fttoffice_db
+      - rabbitmq
