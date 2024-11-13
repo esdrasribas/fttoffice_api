@@ -4,7 +4,7 @@ import requests
 class ListOfSubnets:
     def list_subnets(self, element):
         try:
-            url = "http://10.61.184.101:8080/ws/services/VQIPWebService/"
+            url = "URL"
             headers = {
                 'Content-Type': 'text/xml; charset=utf-8'
             }
@@ -33,8 +33,8 @@ class ListOfSubnets:
             print(f"Falha na chamada da API: {e}")
 
     def xml_VQIP_ListOfSubnets(self, element):
-        user = "vt38823"
-        senha = "abcd12345"
+        user = "XXXX"
+        senha = "XXXXX"
         return f"""<?xml version="1.0" encoding="UTF-8"?>
         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
             <soapenv:Header xmlns:wsa="http://www.w3.org/2005/08/addressing">
@@ -44,7 +44,7 @@ class ListOfSubnets:
                         <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">{senha}</wsse:Password>
                     </wsse:UsernameToken>
                 </wsse:Security>
-                <wsa:To>http://10.81.125.27:8080/ws/services/VQIPWebService</wsa:To>
+                <wsa:To>URL</wsa:To>
                 <wsa:MessageID>urn:uuid:ec8a6bfb-f380-495e-bb6a-28dd0b981e9d</wsa:MessageID>
                 <wsa:Action>VQIPManager_PageSearchRequest</wsa:Action>
             </soapenv:Header>
