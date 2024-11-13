@@ -5,7 +5,7 @@ import requests
 class addIPv4Selected:
     def add_IPv4_Selected(self, ip_fixo, GPONID):
         try:
-            url = "http://10.61.184.101:8080/ws/services/VQIPWebService/"
+            url = "URL"
             headers = {
                 'Content-Type': 'text/xml; charset=utf-8'
             }
@@ -45,14 +45,14 @@ class addIPv4Selected:
                         <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">{senha}</wsse:Password>
                     </wsse:UsernameToken>
                 </wsse:Security>
-                <wsa:To>http://10.61.184.101:8080/ws/services/VQIPWebService</wsa:To>
+                <wsa:To>URL</wsa:To>
                 <wsa:MessageID>urn:uuid:e9ae745e-029c-4f88-94c5-6e5a26b8d7f0</wsa:MessageID>
                 <wsa:Action>VQIPManager_AddRequest</wsa:Action>
             </soapenv:Header>
             <soapenv:Body>
                 <ns1:AddRequest xmlns:ns1="http://alcatel-lucent.com/qip/nb/ws">
                     <ns1:commonParam>
-                        <ns1:organization>OI_Regiao_1</ns1:organization>
+                        <ns1:organization></ns1:organization>
                         <ns1:locale>pt_BR</ns1:locale>
                     </ns1:commonParam>
                     <ns1:reqObject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns1:V4_ADDR_REC">
