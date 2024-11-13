@@ -53,7 +53,7 @@ class DeleteIPv4Addr:
         <soapenv:Body>
             <ns1:DeleteRequest xmlns:ns1="http://alcatel-lucent.com/qip/nb/ws">
                 <ns1:commonParam>
-                    <ns1:organization>OI_Regiao_1</ns1:organization>
+                    <ns1:organization></ns1:organization>
                     <ns1:locale>pt_BR</ns1:locale>
                 </ns1:commonParam>
                 <ns1:reqObject xsi:type="ns1:V4_ADDR_REC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
