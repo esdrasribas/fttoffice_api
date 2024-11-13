@@ -10,22 +10,33 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from pathlib import Path
+from django.conf import settings
+from datetime import timedelta
+from datetime import datetime
+import os
+import logging
+from logging.handlers import TimedRotatingFileHandler
+import environs
+import os
+env = environs.Env()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Take environment variables from .env file
+environs.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-jy2gdshcyi5(rp_(mwo-5l4$3ttf#iwg)6y85+gvp1j7!#kz8('
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,6 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
+    'drf_yasg',
     'fttoffice',
 ]
 
@@ -45,6 +58,23 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+}
+
+# Token config
+SIMPLE_JWT = {
+   'AUTH_HEADER_TYPES': ('Bearer',),
+   'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+   'REFRESH_TOKEN_LIFETIME': timedelta(days=90),
+}
+
+SWAGGER_SETTINGS = {
+   'SECURITY_DEFINITIONS': {
+      'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+      }
+   }
 }
 
 MIDDLEWARE = [
@@ -55,6 +85,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'fttoffice.middlewares.APILogMiddleware',
+    'fttoffice.block_ip_middleware.BlockIPMiddleware',
 ]
 
 ROOT_URLCONF = 'api.urls'
@@ -83,8 +115,12 @@ WSGI_APPLICATION = 'api.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('POSTGRES_DB'),
+        'USER': env('POSTGRES_USER'),
+        'PASSWORD': env('POSTGRES_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': '5432',
     }
 }
 
@@ -111,9 +147,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
@@ -129,3 +165,28 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Defina o caminho completo para o diretório de logs
+LOGS_DIR = '/fttoffice-api/logs/'
+
+# Crie o diretório de logs se ele não existir
+if not os.path.exists(LOGS_DIR):
+    os.makedirs(LOGS_DIR)
+
+data_atual = datetime.now().strftime("%d_%m_%Y")
+log_file_name = f"fttoffice_requests_{data_atual}.log"
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s %(levelname)s %(message)s',
+    handlers=[
+        TimedRotatingFileHandler(
+            os.path.join(LOGS_DIR, log_file_name),
+            when='midnight',
+            interval=1,
+            backupCount=90,
+            encoding='utf-8'
+        ),
+    ]
+)
